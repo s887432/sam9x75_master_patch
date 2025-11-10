@@ -1,0 +1,2541 @@
+diff --git a/Makefile b/Makefile
+index 1c9e34e..a756433 100644
+--- a/Makefile
++++ b/Makefile
+@@ -19,6 +19,7 @@ SAM9X60EK_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sam9x60ek/*.dtso))
+ SAM9X60_CURIOSITY_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sam9x60_curiosity/*.dtso))
+ SAM9X75EB_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sam9x75eb/*.dtso))
+ SAM9X75_CURIOSITY_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sam9x75_curiosity/*.dtso))
++SAM9X75_MASTER_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sam9x75_master/*.dtso))
+ SAMA5D2_ICP_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sama5d2_icp/*.dtso))
+ SAMA5D2_PTC_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sama5d2_ptc_ek/*.dtso))
+ SAMA5D2_XPLAINED_DTBO_OBJECTS:= $(patsubst %.dtso,%.dtbo,$(wildcard sama5d2_xplained/*.dtso))
+@@ -60,6 +61,8 @@ sam9x75eb_dtbos: $(SAM9X75EB_DTBO_OBJECTS)
+ 
+ sam9x75_curiosity_dtbos: $(SAM9X75_CURIOSITY_DTBO_OBJECTS)
+ 
++sam9x75_master_dtbos: $(SAM9X75_MASTER_DTBO_OBJECTS)
++
+ sama5d2_icp_dtbos: $(SAMA5D2_ICP_DTBO_OBJECTS)
+ 
+ sama5d2_ptc_ek_dtbos: $(SAMA5D2_PTC_DTBO_OBJECTS)
+diff --git a/sam9x75_master.its b/sam9x75_master.its
+new file mode 100644
+index 0000000..5bb3a37
+--- /dev/null
++++ b/sam9x75_master.its
+@@ -0,0 +1,368 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Flattened Image Tree file for SAM9X75-Curiosity board
++ *
++ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Varshini Rajendran <Varshini.Rajendran@microchip.com>
++ */
++/dts-v1/;
++
++/ {
++	description = "Microchip SAM9X75-Master FIT Image";
++	#address-cells = <1>;
++
++	images {
++		kernel {
++			description = "Linux4SAM Linux kernel";
++			data = /incbin/("./zImage");
++			type = "kernel";
++			arch = "arm";
++			os = "linux";
++			compression = "none";
++			load = <0x22000000>;
++			entry = <0x22000000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		base_fdt {
++			description = "SAM9X75-Master Flattened Device Tree blob";
++			data = /incbin/("./at91-sam9x75_master.dtb");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23000000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_isc_imx219 {
++			description = "Device Tree blob ISC IMX219 overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_isc_imx219.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23100000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_lvds_panel {
++			description = "Device Tree blob for AC69T88A LVDS Display Panel";
++			data = /incbin/("./sam9x75_master/sam9x75_master_lvds_display.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23110000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_lvds_panel_newvision {
++			description = "Device Tree blob for New Vision Display Panel";
++			data = /incbin/("./sam9x75_master/sam9x75_master_lvds_newvision_display.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23110000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_rmii_phy {
++			description = "Device Tree blob for LAN8840 RGMII PHY overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_rmii-phy.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_lan8840 {
++			description = "Device Tree blob for LAN8840 RGMII PHY overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_lan8840.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_lan9646 {
++			description = "Device Tree blob for LAN9646 RGMII switch overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_lan9646.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_ksz8795 {
++			description = "Device Tree blob for KSZ8795 RMII switch overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_ksz8795.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_ksz8895 {
++			description = "Device Tree blob for KSZ8895 RMII switch overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_ksz8895.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_ksz9477 {
++			description = "Device Tree blob for KSZ9477 RGMII switch overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_ksz9477.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_gmac_ksz9563 {
++			description = "Device Tree blob for KSZ9563 RGMII switch overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_gmac_ksz9563.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23120000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_i2s_proto {
++			description = "Device Tree blob PROTO Audio board overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_i2s_proto.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23130000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_mipi_panel {
++			description = "Device Tree blob for AC40T08A MPU32 MIPI Display Panel";
++			data = /incbin/("./sam9x75_master/sam9x75_master_mipi_display.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23140000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_pwm {
++			description = "Device Tree blob for PWM signals";
++			data = /incbin/("./sam9x75_master/sam9x75_master_pwm.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23150000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_spi_click {
++			description = "Device Tree blob at25ff321a spi flash clickboard overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_at25ff321a_click.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23160000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++
++		fdt_wilcs02 {
++			description = "Device Tree blob WILCS02 overlay";
++			data = /incbin/("./sam9x75_master/sam9x75_master_wilcs02.dtbo");
++			type = "flat_dt";
++			arch = "arm";
++			compression = "none";
++			load = <0x23170000>;
++			hash-1 {
++				algo = "crc32";
++			};
++			hash-2 {
++				algo = "sha1";
++			};
++		};
++	};
++
++	configurations {
++		default = "kernel_dtb";
++
++		kernel_dtb {
++			description = "Linux kernel and base FDT blob for SAM9X75-Master board";
++			kernel = "kernel";
++			fdt = "base_fdt";
++		};
++
++		base_dtb {
++			description = "Base FDT blob for SAM9X75-Master board";
++			fdt = "base_fdt";
++		};
++
++		imx219 {
++			description = "FDT overlay blob for ISC IMX219 sensor";
++			fdt = "fdt_isc_imx219";
++		};
++
++		lvds {
++			description = "FDT overlay blob for AC69T88A LVDS Display Panel";
++			fdt = "fdt_lvds_panel";
++		};
++
++		lvds_newvision {
++			description = "FDT overlay blob for New Vision LVDS Display Panel";
++			fdt = "fdt_lvds_panel_newvision";
++		};
++
++		rmii-phy {
++			description = "FDT overlay blob for Single-port RMII PHY Daughter Card";
++			fdt = "fdt_gmac_rmii_phy";
++		};
++
++		ksz9131 {
++			description = "FDT overlay blob for KSZ9131 RGMII PHY Daughter Card";
++			fdt = "fdt_gmac_lan8840";
++		};
++
++		lan8840 {
++			description = "FDT overlay blob for LAN8840 RGMII PHY Daughter Card";
++			fdt = "fdt_gmac_lan8840";
++		};
++
++		lan9646 {
++			description = "FDT overlay blob for LAN9646 RGMII switch Daughter Card";
++			fdt = "fdt_gmac_lan9646";
++		};
++
++		ksz8795 {
++			description = "FDT overlay blob for KSZ8795 RGMII switch Daughter Card";
++			fdt = "fdt_gmac_ksz8795";
++		};
++
++		ksz8895 {
++			description = "FDT overlay blob for KSZ8895 RMII switch Daughter Card";
++			fdt = "fdt_gmac_ksz8895";
++		};
++
++		ksz9477 {
++			description = "FDT overlay blob for KSZ9477 RGMII switch Daughter Card";
++			fdt = "fdt_gmac_ksz9477";
++		};
++
++		ksz9563 {
++			description = "FDT overlay blob for KSZ9563 RGMII switch Daughter Card";
++			fdt = "fdt_gmac_ksz9563";
++		};
++
++		i2s_proto {
++			description = "FDT overlay blob for I2S PROTO audio board";
++			fdt = "fdt_i2s_proto";
++		};
++
++		mipi {
++			description = "FDT overlay blob for AC40T08A MPU32 MIPI Display Panel";
++			fdt = "fdt_mipi_panel";
++		};
++
++		pwm {
++			description = "FDT overlay blob for PWM";
++			fdt = "fdt_pwm";
++		};
++
++		spi_click {
++			description = "FDT overlay blob for at25ff321a spi flash clickboard";
++			fdt = "fdt_spi_click";
++		};
++
++		wilc {
++			description = "FDT overlay blob for WILCS02";
++			fdt = "fdt_wilcs02";
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_at25ff321a_click.dtso b/sam9x75_master/sam9x75_master_at25ff321a_click.dtso
+new file mode 100644
+index 0000000..5f99c88
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_at25ff321a_click.dtso
+@@ -0,0 +1,51 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ *  Device Tree overlay for SAM9X75 Curiosity board in order to use SPI on click board 1 slot
++ *
++ *  Copyright (c) 2024 Microchip Technology Inc. and its subsidiaries
++ *
++ *  Author: Santiago Esteban <santiago.esteban@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++
++	spi3: spi@400 {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_mikrobus_spi &pinctrl_mikrobus_spi_cs>;
++		status = "okay";
++
++		flash@1 {
++			compatible = "atmel,at25ff321a", "jedec,spi-nor";
++			reg = <1>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			spi-max-frequency = <2000000>;
++			spi-tx-bus-width = <1>;
++			spi-rx-bus-width = <1>;
++			m25p,fast-read;
++		};
++	};
++};
++
++&pinctrl {
++	spi3 {
++		pinctrl_mikrobus_spi: mikrobus-spi {
++			atmel,pins = <AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE
++					AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++					AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_mikrobus_spi_cs: mikrobus-spi-cs {
++			atmel,pins = <AT91_PIOC 24 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_ksz8795.dtso b/sam9x75_master/sam9x75_master_gmac_ksz8795.dtso
+new file mode 100644
+index 0000000..517067a
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_ksz8795.dtso
+@@ -0,0 +1,176 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob supporting the
++ * KSZ8795 5-port 10/100 switch Daughter Card using SPI and RGMII.
++ *
++ * Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ * Refer to the EV40P40A (KSZ8795-EDS2 daughter card)
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++};
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rgmii_default>;
++	magic-packet;
++	status = "okay";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++        eeprom@54 {
++                compatible = "atmel,24c01";
++                reg = <0x54>;
++                pagesize = <8>;
++                status = "okay";
++        };
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx3_default: flx3-spi-default {
++			atmel,pins =
++				<AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 25 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_NONE
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++
++	gmac-pins {
++		pinctrl_gmac_rgmii_default: gmac-rgmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 4  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX2   */
++				 AT91_PIOB 5  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX3   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXCTL  */
++				 AT91_PIOB 6  AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_SLEWRATE_DIS)	/* ETH_TXCK  */
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX2   */
++				 AT91_PIOB 1  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX3   */
++				 AT91_PIOB 8  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCK   */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCTL */
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++				 AT91_PIOB 2  AT91_PERIPH_A  AT91_PINCTRL_DIS_SCHMIT				/* ETH_125CK */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&spi3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx3_default>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	ksz8795spi: ksz8795-switch@0 {
++		compatible = "microchip,ksz8795";
++		reg = <0>;
++		spi-max-frequency = <10000000>;
++
++		spi-cpha;
++		spi-cpol;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy3>;
++			};
++			port@4 {
++				reg = <4>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy0: ethernet-phy@0 {
++				reg = <0>;
++			};
++			swphy1: ethernet-phy@1 {
++				reg = <1>;
++			};
++			swphy2: ethernet-phy@2 {
++				reg = <2>;
++			};
++			swphy3: ethernet-phy@3 {
++				reg = <3>;
++			};
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: KSZ8795 RGMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_ksz8895.dtso b/sam9x75_master/sam9x75_master_gmac_ksz8895.dtso
+new file mode 100644
+index 0000000..67258a9
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_ksz8895.dtso
+@@ -0,0 +1,174 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob supporting the
++ * KSZ8895 5-port 10/100 switch Daughter Card using SPI and RMII.
++ *
++ * Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ * Refer to the EV45A66A (KSZ8895-EDS2 daughter card)
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++};
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rmii";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rmii_default>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	fixed-link {
++		speed = <100>;
++		full-duplex;
++		pause;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx3_default: flx3-spi-default {
++			atmel,pins =
++				<AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 25 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_NONE
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++
++	gmac-pins {
++		pinctrl_gmac_rmii_default: gmac-rmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXEN  */
++				 AT91_PIOB 6  AT91_PERIPH_A  (AT91_PINCTRL_SLEWRATE_DIS | AT91_PINCTRL_DIS_SCHMIT)				/* ETH_TXCK (REFCLK) */
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_C  AT91_PINCTRL_PULL_DOWN				/* ETH_RXER in RMII  */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXDV */
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO	AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&spi3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx3_default>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	ksz8895spi: ksz8895-switch@0 {
++		compatible = "microchip,ksz8895";
++		reg = <0>;
++		spi-max-frequency = <10000000>;
++
++		spi-cpha;
++		spi-cpol;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy3>;
++			};
++			port@4 {
++				reg = <4>;
++				label = "cpu";
++				phy-mode = "rmii";
++			//	rx-internal-delay-ps = <2000>;
++			//	tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <100>;
++					full-duplex;
++					pause;
++				};
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy0: ethernet-phy@0 {
++				reg = <0>;
++			};
++			swphy1: ethernet-phy@1 {
++				reg = <1>;
++			};
++			swphy2: ethernet-phy@2 {
++				reg = <2>;
++			};
++			swphy3: ethernet-phy@3 {
++				reg = <3>;
++			};
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: KSZ8895 RMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_ksz9477.dtso b/sam9x75_master/sam9x75_master_gmac_ksz9477.dtso
+new file mode 100644
+index 0000000..715f17a
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_ksz9477.dtso
+@@ -0,0 +1,300 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob supporting the
++ * KSZ9477 7-port Gigabit switch Daughter Card using I2C or SPI and RGMII.
++ *
++ * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ * Refer to the EV30S09A (KSZ9477-EDS2 daughter card)
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++};
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rgmii_default>;
++	magic-packet;
++	status = "okay";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++
++	ksz9477i2c: ksz9477i-switch@5f {
++		compatible = "microchip,ksz9477";
++		reg = <0x5f>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy_0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy_1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy_2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy_3>;
++			};
++			port@4 {
++				reg = <4>;
++				label = "lan5";
++				phy-handle = <&swphy_4>;
++			};
++			port@5 {
++				reg = <5>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++					pause;
++				};
++			};
++			port@6 {
++				reg = <6>;
++				label = "lan6";
++				phy-mode = "sgmii";
++				fixed-link {
++					speed = <1000>;
++					full-dulpex;
++				};
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy_0: ethernet-phy@0 {
++				reg = <0>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_1: ethernet-phy@1 {
++				reg = <1>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_2: ethernet-phy@2 {
++				reg = <2>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_3: ethernet-phy@3 {
++				reg = <3>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_4: ethernet-phy@4 {
++				reg = <4>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++		};
++	};
++};
++
++&pinctrl {
++
++	flexcom {
++		pinctrl_flx3_default: flx3-spi-default {
++			atmel,pins =
++				<AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 25 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_NONE
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++
++	gmac {
++		pinctrl_gmac_rgmii_default: gmac-rgmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 4  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX2   */
++				 AT91_PIOB 5  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX3   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXCTL  */
++				 AT91_PIOB 6  AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_SLEWRATE_DIS)	/* ETH_TXCK  */
++
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX2   */
++				 AT91_PIOB 1  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX3   */
++				 AT91_PIOB 8  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCK   */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCTL */
++
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++
++				 AT91_PIOB 2  AT91_PERIPH_A  AT91_PINCTRL_DIS_SCHMIT			 	/* ETH_125CK */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&spi3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dmas = <0>, <0>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_flx3_default>;
++	status = "okay";
++
++	ksz9477spi: ksz9477s-switch@0 {
++		compatible = "microchip,ksz9477";
++		reg = <0>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		spi-max-frequency = <10000000>;
++//		spi-cs-setup-delay-ns = <100>;
++//		spi-cs-hold-delay-ns = <100>;
++//		spi-cs-inactive-delay-ns = <0>;
++		spi-cpha;
++		spi-cpol;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy3>;
++			};
++			port@4 {
++				reg = <4>;
++				label = "lan5";
++				phy-handle = <&swphy4>;
++			};
++			port@5 {
++				reg = <5>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++					pause;
++				};
++			};
++			port@6 {
++				reg = <6>;
++				label = "lan6";
++				phy-mode = "sgmii";
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy0: ethernet-phy@0 {
++				reg = <0>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy1: ethernet-phy@1 {
++				reg = <1>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy2: ethernet-phy@2 {
++				reg = <2>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy3: ethernet-phy@3 {
++				reg = <3>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy4: ethernet-phy@4 {
++				reg = <4>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: KSZ9477 RGMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_ksz9563.dtso b/sam9x75_master/sam9x75_master_gmac_ksz9563.dtso
+new file mode 100644
+index 0000000..12640c4
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_ksz9563.dtso
+@@ -0,0 +1,201 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob supporting the
++ * KSZ9563 3-port Gigabit switch Daughter Card using I2C or SPI and RGMII.
++ *
++ * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ * Refer to the EV35V13A (KSZ9563-EDS2 daughter card)
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++};
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rgmii_default>;
++	magic-packet;
++	status = "okay";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++
++	ksz9563: ksz9563-switch@5f {
++		compatible = "microchip,ksz9563";
++		reg = <95>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++			};
++			port@2 {
++				reg = <2>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++		};
++	};
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx3_default: flx3-spi-default {
++			atmel,pins =
++				<AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 25 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_NONE
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++
++	gmac {
++		pinctrl_gmac_rgmii_default: gmac-rgmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 4  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX2   */
++				 AT91_PIOB 5  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX3   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXCTL  */
++				 AT91_PIOB 6  AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_SLEWRATE_DIS)	/* ETH_TXCK  */
++
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX2   */
++				 AT91_PIOB 1  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX3   */
++				 AT91_PIOB 8  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCK   */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCTL */
++
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++
++				 AT91_PIOB 2  AT91_PERIPH_A  AT91_PINCTRL_DIS_SCHMIT			 	/* ETH_125CK */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&spi3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx3_default>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	ksz9563spi: ksz9563-switch@0 {
++		compatible = "microchip,ksz9563";
++		reg = <0>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		spi-max-frequency = <10000000>;		/* flywire */
++
++		spi-cpha;
++		spi-cpol;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy1>;
++			};
++			port@2 {
++				reg = <2>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++				};
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy0: ethernet-phy@0 {
++				reg = <0>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy1: ethernet-phy@1 {
++				reg = <1>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: KSZ9563 RGMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_lan8840.dtso b/sam9x75_master/sam9x75_master_gmac_lan8840.dtso
+new file mode 100644
+index 0000000..86f3476
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_lan8840.dtso
+@@ -0,0 +1,95 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob for the LAN8840 RGMII PHY Daughter Card.
++ *
++ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Mihai Sain <mihai.sain@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rgmii-id";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rgmii_default>;
++	magic-packet;
++	status = "okay";
++
++	ethernet-phy@1 {
++		reg = <0x1>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_PULL_UP
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_PULL_UP>;
++		};
++	};
++
++	gmac {
++		pinctrl_gmac_rgmii_default: gmac-rgmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 4  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX2   */
++				 AT91_PIOB 5  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX3   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXCTL  */
++				 AT91_PIOB 6  AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_SLEWRATE_DIS)	/* ETH_TXCK  */
++
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX2   */
++				 AT91_PIOB 1  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX3   */
++				 AT91_PIOB 8  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCK   */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCTL */
++
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++
++				 AT91_PIOB 2  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_125CK */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: LAN8840 RGMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_lan9646.dtso b/sam9x75_master/sam9x75_master_gmac_lan9646.dtso
+new file mode 100644
+index 0000000..139acf2
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_lan9646.dtso
+@@ -0,0 +1,282 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob supporting the
++ * LAN9646 6-port Gigabit switch Daughter Card using I2C or SPI and RGMII.
++ *
++ * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ * Refer to the EV94T99A (LAN9646-EDS2 daughter card)
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx3 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_SPI>;
++	status = "okay";
++};
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rgmii-id";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rgmii_default>;
++	magic-packet;
++	status = "okay";
++
++	fixed-link {
++		speed = <1000>;
++		full-duplex;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++
++	lan9646i2c: lan9646i-switch@5f {
++		compatible = "microchip,lan9646";
++		reg = <0x5f>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy_0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy_1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy_2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy_3>;
++			};
++			port@4 {
++				reg = <5>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++					pause;
++				};
++			};
++			port@5 {
++				reg = <6>;
++				label = "lan5";
++				phy-handle = <&swphy_6>;
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy_0: ethernet-phy@0 {
++				reg = <0>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_1: ethernet-phy@1 {
++				reg = <1>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_2: ethernet-phy@2 {
++				reg = <2>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_3: ethernet-phy@3 {
++				reg = <3>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy_6: ethernet-phy@6 {
++				reg = <6>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++		};
++	};
++};
++
++&pinctrl {
++
++	flexcom {
++		pinctrl_flx3_default: flx3-spi-default {
++			atmel,pins =
++				<AT91_PIOC 22 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 23 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 25 AT91_PERIPH_B AT91_PINCTRL_NONE
++				 AT91_PIOC 26 AT91_PERIPH_B AT91_PINCTRL_NONE>;
++		};
++
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_NONE
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++
++	gmac {
++		pinctrl_gmac_rgmii_default: gmac-rgmii-default {
++			atmel,pins =
++				<AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX0   */
++				 AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX1   */
++				 AT91_PIOB 4  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX2   */
++				 AT91_PIOB 5  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TX3   */
++				 AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_TXCTL  */
++				 AT91_PIOB 6  AT91_PERIPH_A (AT91_PINCTRL_PULL_UP | AT91_PINCTRL_SLEWRATE_DIS)	/* ETH_TXCK  */
++
++				 AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX0   */
++				 AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX1   */
++				 AT91_PIOB 0  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX2   */
++				 AT91_PIOB 1  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RX3   */
++				 AT91_PIOB 8  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCK   */
++				 AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS				/* ETH_RXCTL */
++
++				 AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDC   */
++				 AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE					/* ETH_MDIO  */
++
++				 AT91_PIOB 2  AT91_PERIPH_A  AT91_PINCTRL_DIS_SCHMIT			 	/* ETH_125CK */
++				 AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;				/* ETH_INT   */
++		};
++	};
++};
++
++&spi3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	dmas = <0>, <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx3_default>;
++	status = "okay";
++
++	lan9646spi: lan9646s-switch@0 {
++		compatible = "microchip,lan9646";
++		reg = <0>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++		spi-max-frequency = <11000000>;
++//		spi-cs-setup-delay-ns = <100>;
++//		spi-cs-hold-delay-ns = <100>;
++//		spi-cs-inactive-delay-ns = <0>;
++		spi-cpha;
++		spi-cpol;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			port@0 {
++				reg = <0>;
++				label = "lan1";
++				phy-handle = <&swphy0>;
++			};
++			port@1 {
++				reg = <1>;
++				label = "lan2";
++				phy-handle = <&swphy1>;
++			};
++			port@2 {
++				reg = <2>;
++				label = "lan3";
++				phy-handle = <&swphy2>;
++			};
++			port@3 {
++				reg = <3>;
++				label = "lan4";
++				phy-handle = <&swphy3>;
++			};
++			port@4 {
++				reg = <5>;
++				phy-mode = "rgmii-id";
++				rx-internal-delay-ps = <2000>;
++				tx-internal-delay-ps = <2000>;
++				ethernet = <&gmac>;
++				fixed-link {
++					speed = <1000>;
++					full-duplex;
++					pause;
++				};
++			};
++			port@5 {
++				reg = <6>;
++				label = "lan5";
++				phy-handle = <&swphy6>;
++			};
++		};
++		mdio {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			swphy0: ethernet-phy@0 {
++				reg = <0>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy1: ethernet-phy@1 {
++				reg = <1>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy2: ethernet-phy@2 {
++				reg = <2>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy3: ethernet-phy@3 {
++				reg = <3>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++			swphy6: ethernet-phy@6 {
++				reg = <6>;
++				eee-broken-100tx;
++				eee-broken-1000t;
++			};
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: LAN9646 RGMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_gmac_rmii-phy.dtso b/sam9x75_master/sam9x75_master_gmac_rmii-phy.dtso
+new file mode 100644
+index 0000000..46e646f
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_gmac_rmii-phy.dtso
+@@ -0,0 +1,88 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob for a single-port
++ * RMII PHY Daughter Card.
++ *
++ * Copyright (C) 2025 Microchip Technology Inc. and its subsidiaries
++ *
++ * Author: Jerry Ray <jerry.ray@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include <dt-bindings/pinctrl/at91.h>
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&gmac {
++	phy-mode = "rmii";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_gmac_rmii_default>;
++//	magic-packet;
++	status = "okay";
++
++	ethernet-phy@1 {
++		reg = <0x1>;
++		interrupt-parent = <&pioD>;
++		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
++	};
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	dmas = <0>, <0>;
++	status = "okay";
++
++	eeprom@54 {
++		compatible = "atmel,24c01";
++		reg = <0x54>;
++		pagesize = <8>;
++		status = "okay";
++	};
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_PULL_UP
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_PULL_UP>;
++		};
++	};
++
++	gmac {
++		pinctrl_gmac_rmii_default: gmac-rmii-default {
++			atmel,pins =
++                               <AT91_PIOB 13 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_TX0   */
++                                AT91_PIOB 14 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_TX1   */
++                                AT91_PIOB 7  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_TXEN  */
++                                AT91_PIOB 6  AT91_PERIPH_A  (AT91_PINCTRL_SLEWRATE_DIS | AT91_PINCTRL_DIS_SCHMIT)                              /* ETH_TXCK (REFCLK) */
++                                AT91_PIOB 11 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_RX0   */
++                                AT91_PIOB 12 AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_RX1   */
++                                AT91_PIOB 0  AT91_PERIPH_C  AT91_PINCTRL_PULL_DOWN                             /* ETH_RXER in RMII  */
++                                AT91_PIOB 3  AT91_PERIPH_A  AT91_PINCTRL_SLEWRATE_DIS                          /* ETH_RXDV */
++                                AT91_PIOB 10 AT91_PERIPH_A  AT91_PINCTRL_NONE                                  /* ETH_MDC   */
++                                AT91_PIOB 9  AT91_PERIPH_A  AT91_PINCTRL_NONE                                  /* ETH_MDIO  */
++                                AT91_PIOD 5  AT91_PERIPH_GPIO  AT91_PINCTRL_NONE>;                             /* ETH_INT   */
++		};
++	};
++};
++
++&{/} {
++	model = "SAM9X75-Curiosity: Single-port RMII PHY Daughter Card";
++};
+diff --git a/sam9x75_master/sam9x75_master_i2s_proto.dtso b/sam9x75_master/sam9x75_master_i2s_proto.dtso
+new file mode 100644
+index 0000000..a45dc13
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_i2s_proto.dtso
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 Curiosity board overlay blob for
++ * I2S with PROTO board. The blob uses i2s0 and i2c on flx7.
++ *
++ * Copyright (C) 2023 Microchip Technology, Inc.
++ * Author: Varshini Rajendran <varshini.rajendran@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++#include <dt-bindings/mfd/atmel-flexcom.h>
++#include "dt-bindings/pinctrl/at91.h"
++
++&flx7 {
++	atmel,flexcom-mode = <ATMEL_FLEXCOM_MODE_TWI>;
++	status = "okay";
++};
++
++&i2c7 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_flx7_twi_default>;
++	dmas = <0>, <0>;
++	i2c-analog-filter;
++	i2c-digital-filter;
++	i2c-digital-filter-width-ns = <35>;
++	status = "okay";
++	wm8731: codec@1a {
++		compatible = "wlf,wm8731";
++		reg = <0x1a>;
++	};
++};
++
++&i2s {
++	status = "okay";
++};
++
++&{/} {
++	sound {
++		compatible = "mikroe,mikroe-proto";
++		model = "wm8731 @ sam9x75_curiosity";
++		i2s-controller = <&i2s>;
++		audio-codec = <&wm8731>;
++		dai-format = "i2s";
++	};
++};
++
++&pinctrl {
++	flexcom {
++		pinctrl_flx7_twi_default: flx7-twi-default {
++			atmel,pins =
++				<AT91_PIOC 0 AT91_PERIPH_C AT91_PINCTRL_PULL_UP
++				 AT91_PIOC 1 AT91_PERIPH_C AT91_PINCTRL_PULL_UP>;
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_isc_imx219.dtso b/sam9x75_master/sam9x75_master_isc_imx219.dtso
+new file mode 100644
+index 0000000..ea8838d
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_isc_imx219.dtso
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 CURIOSITY board overlay blob
++ * for ISC with imx219 sensor. The blob uses isc and i2c6
++ *
++ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++ * Author: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/pinctrl/at91.h>
++#include <dt-bindings/gpio/gpio.h>
++
++&csi_dphy {
++	status = "okay";
++};
++
++&{/} {
++	vana_imx219: fixed-regulator-vana {
++		compatible = "regulator-fixed";
++
++		regulator-name = "VANA-supply";
++		regulator-min-microvolt = <2800000>;
++		regulator-max-microvolt = <2800000>;
++		regulator-always-on;
++		regulator-boot-on;
++		status = "okay";
++	};
++
++	vdig_imx219: fixed-regulator-vdig {
++		compatible = "regulator-fixed";
++
++		regulator-name = "VDIG-supply";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vana_imx219>;
++		status = "okay";
++	};
++
++	vddl_imx219: fixed-regulator-vddl {
++		compatible = "regulator-fixed";
++
++		regulator-name = "VDDL-supply";
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1200000>;
++		regulator-always-on;
++		regulator-boot-on;
++		vin-supply = <&vana_imx219>;
++		status = "okay";
++	};
++};
++
++&csi2host {
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	status = "okay";
++
++	port@1 {
++		reg = <1>;
++		csi2host_in: endpoint {
++			remote-endpoint = <&imx219_out>;
++			data-lanes = <1 2>;
++			bus-type = <4>;
++			clock-lanes = <0>;
++		};
++	};
++
++	port@2 {
++		reg = <2>;
++		csi2host_out: endpoint {
++			remote-endpoint = <&csi2dc_in>;
++		};
++	};
++};
++
++&csi2dc {
++	status = "okay";
++
++	ports {
++		port@0 {
++			csi2dc_in: endpoint {
++				remote-endpoint = <&csi2host_out>;
++				bus-type = <4>; /* MIPI CSI2 D-PHY */
++			};
++		};
++	};
++};
++
++&i2c6 {
++	/*
++	 * Camera sensor add-on board Raspberry Pi v2.1 Camera extension
++	 *
++	 * Sensor i2c address is fixed at 0x10
++	 *
++	 * 24 Mhz crystal is soldered on the board and hardwired to sensor
++	 *
++	 * Power supplies are present on the board and supplied by 3v3
++	 * rail from sam9x75_curiosity PMIC
++	 */
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	imx219: camera@10 {
++		compatible = "sony,imx219";
++		reg = <0x10>;
++		clocks = <&imx219_clk>;
++		clock-names = "xclk";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_sensor_reset>;
++		VANA-supply = <&vana_imx219>; /* 2.8v */
++		VDIG-supply = <&vdig_imx219>; /* 1.8v */
++		VDDL-supply = <&vddl_imx219>; /* 1.2v */
++		reset-gpios = <&pioC 19 GPIO_ACTIVE_HIGH>;
++		status = "okay";
++
++		imx219_clk: camera-clk {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <24000000>;
++		};
++
++		port {
++			imx219_out: endpoint {
++				remote-endpoint = <&csi2host_in>;
++				clock-lanes = <0>;
++				data-lanes = <1 2>;
++				link-frequencies = /bits/ 64 <456000000>;
++				clock-noncontinuous;
++			};
++		};
++	};
++};
++
++&pinctrl {
++	csi {
++		pinctrl_sensor_reset: sensor_reset {
++			atmel,pins = <AT91_PIOC 19 AT91_PERIPH_GPIO AT91_PINCTRL_NONE>;
++		};
++	};
++};
++
++&xisc {
++	microchip,mipi-mode;
++	status = "okay";
++};
+diff --git a/sam9x75_master/sam9x75_master_lvds_display.dtso b/sam9x75_master/sam9x75_master_lvds_display.dtso
+new file mode 100644
+index 0000000..832871f
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_lvds_display.dtso
+@@ -0,0 +1,126 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 Curiosity board overlay blob
++ * for AC69T88A LVDS Display Panel
++ *
++ * Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++ * Author: Dharma Balasubiramani <dharma.b@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/clock/at91.h>
++#include <dt-bindings/pinctrl/at91.h>
++#include <dt-bindings/gpio/gpio.h>
++
++&{/} {
++        mic23150_reg: mic23150_regulator {
++               compatible = "regulator-fixed";
++               regulator-name = "panel-power-supply";
++               regulator-min-microvolt = <3300000>;
++               regulator-max-microvolt = <3300000>;
++               gpio = <&pioC 30 GPIO_ACTIVE_HIGH>; /* LCD_MODULE_ENABLE */
++               enable-active-high;
++               status = "okay";
++        };
++
++	lvds_panel_bl: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 1000000 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pwm>;
++		brightness-levels = <0 32 64 128 256 512 1024>;
++		default-brightness-level = <6>;
++		status="okay";
++	};
++
++	panel {
++		compatible = "microchip,ac69t88a", "simple-panel";
++		backlight = <&lvds_panel_bl>;
++		power-supply = <&mic23150_reg>;
++		status="okay";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			panel_in: endpoint {
++				remote-endpoint = <&lvds_out_panel>;
++			};
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++};
++
++&i2c6 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++	atmel_mxt_ts@4a {
++		compatible = "atmel,atmel_mxt_ts";
++		reg = <0x4a>;
++		interrupt-parent = <&pioA>;
++		interrupts = <20 0x8>; /* MXT_IRQ_PA20 */
++		vdda-supply = <&mic23150_reg>;
++		status = "okay";
++	};
++};
++
++&gpu {
++	status = "okay";
++};
++
++&hlcdc {
++	clocks = <&pmc PMC_TYPE_PERIPHERAL 25>, <&pmc PMC_TYPE_CORE PMC_LVDSPLL>, <&clk32k 1>;
++	clock-names = "periph_clk", "lvds_pll_clk", "slow_clk";
++	status="okay";
++
++	hlcdc-display-controller {
++		port@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			hlcdc_panel_output: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&lvds_in_lcdc>;
++			};
++		};
++	};
++
++	hlcdc_pwm: hlcdc-pwm {
++		status = "disabled";
++	};
++};
++
++&lvds_controller {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			lvds_in_lcdc: endpoint {
++				remote-endpoint = <&hlcdc_panel_output>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			lvds_out_panel: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
++&pinctrl {
++	pwm {
++		pinctrl_pwm: pwm_bl {
++			atmel,pins = <AT91_PIOC 18 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_lvds_newvision_display.dtso b/sam9x75_master/sam9x75_master_lvds_newvision_display.dtso
+new file mode 100644
+index 0000000..c6045e4
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_lvds_newvision_display.dtso
+@@ -0,0 +1,142 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 Curiosity board overlay blob
++ * for Promate 10.1 LVDS Display Panel
++ *
++ * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
++ * Author: Sandeep Sheriker M <sandeep.sheriker@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/clock/at91.h>
++#include <dt-bindings/pinctrl/at91.h>
++#include <dt-bindings/gpio/gpio.h>
++
++&{/} {
++        mic23150_reg: mic23150_regulator {
++               compatible = "regulator-fixed";
++               regulator-name = "panel-power-supply";
++               regulator-min-microvolt = <3300000>;
++               regulator-max-microvolt = <3300000>;
++               gpio = <&pioC 30 GPIO_ACTIVE_HIGH>; /* LCD_MODULE_ENABLE */
++               enable-active-high;
++               status = "okay";
++        };
++
++	lvds_panel_bl: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 0 1000000 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pwm>;
++		brightness-levels = <0 32 64 128 256 512 1024>;
++		default-brightness-level = <6>;
++		status="okay";
++	};
++
++	panel {
++		/* LVDS Display panel Promate 10.1 */
++		compatible = "panel-lvds";
++		backlight = <&lvds_panel_bl>;
++		power-supply = <&mic23150_reg>;
++		width-mm = <216>;
++		height-mm = <135>;
++		data-mapping = "vesa-24";
++		status="okay";
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		panel-timing {
++			clock-frequency = <65000000>;
++			hactive = <1280>;
++			vactive = <800>;
++			hfront-porch = <48>;
++			hback-porch = <80>;
++			hsync-len = <32>;
++			vfront-porch = <8>;
++			vback-porch = <16>;
++			vsync-len = <8>;
++		};
++
++		port@0 {
++			reg = <0>;
++			panel_in: endpoint {
++				remote-endpoint = <&lvds_out_panel>;
++			};
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++};
++
++&i2c6 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++	atmel_mxt_ts@4a {
++		compatible = "atmel,atmel_mxt_ts";
++		reg = <0x4a>;
++		interrupt-parent = <&pioA>;
++		interrupts = <20 0x8>; /* MXT_IRQ_PA20 */
++		vdda-supply = <&mic23150_reg>;
++		status = "okay";
++	};
++};
++
++&gpu {
++	status = "okay";
++};
++
++&hlcdc {
++	clocks = <&pmc PMC_TYPE_PERIPHERAL 25>, <&pmc PMC_TYPE_CORE PMC_LVDSPLL>, <&clk32k 1>;
++	clock-names = "periph_clk", "lvds_pll_clk", "slow_clk";
++	status="okay";
++
++	hlcdc-display-controller {
++		port@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			hlcdc_panel_output: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&lvds_in_lcdc>;
++			};
++		};
++	};
++
++	hlcdc_pwm: hlcdc-pwm {
++		status = "disabled";
++	};
++};
++
++&lvds_controller {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			lvds_in_lcdc: endpoint {
++				remote-endpoint = <&hlcdc_panel_output>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			lvds_out_panel: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
++&pinctrl {
++	pwm {
++		pinctrl_pwm: pwm_bl {
++			atmel,pins = <AT91_PIOC 18 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_mipi_display.dtso b/sam9x75_master/sam9x75_master_mipi_display.dtso
+new file mode 100644
+index 0000000..ba84601
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_mipi_display.dtso
+@@ -0,0 +1,148 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 Curiosity board overlay blob
++ * for AC40T08A MPU32 MIPI Display panel
++ *
++ * Copyright (C) 2024 Microchip Technology Inc. and its subsidiaries
++ * Author: Manikandan Muralidharan <manikandan.m@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include <dt-bindings/clock/at91.h>
++#include <dt-bindings/pinctrl/at91.h>
++#include <dt-bindings/gpio/gpio.h>
++
++&{/} {
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm0 1 1000000 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pwm_bl>;
++		brightness-levels = <0 32 64 128 256 512 1024>;
++		default-brightness-level = <6>;
++		power-supply = <&vdd_5v>;
++	};
++
++	vdd_5v: fixed-regulator-vdd-5v {
++		compatible = "regulator-fixed";
++		regulator-name = "VDD_5V";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		regulator-always-on;
++	};
++
++	mic23150_reg: mic23150_regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "panel-power-supply";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++	};
++};
++
++&dsi {
++	status = "okay";
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			dsi_in: endpoint {
++				remote-endpoint = <&hlcdc_panel_output>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dsi_out: endpoint {
++				remote-endpoint = <&mipi_in_panel>;
++			};
++		};
++	};
++
++	panel@0 {
++		reg = <0>;
++		compatible = "microchip,ac40t08a-mipi-panel", "himax,hx8394";
++		backlight = <&backlight>;
++		vcc-supply = <&mic23150_reg>;
++		iovcc-supply = <&mic23150_reg>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			mipi_in_panel: endpoint {
++				remote-endpoint = <&dsi_out>;
++			};
++		};
++	};
++};
++
++&gpu {
++	status = "okay";
++};
++
++&hlcdc {
++	clocks = <&pmc PMC_TYPE_PERIPHERAL 25>, <&pmc PMC_TYPE_GCK 25>, <&clk32k 1>;
++	clock-names = "periph_clk", "sys_clk", "slow_clk";
++	assigned-clocks = <&pmc PMC_TYPE_GCK 25>;
++	assigned-clock-rates = <66000000>;
++	status = "okay";
++
++	hlcdc-display-controller {
++		port@0 {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			hlcdc_panel_output: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&dsi_in>;
++			};
++		};
++	};
++
++	hlcdc_pwm: hlcdc-pwm {
++		status = "disabled";
++	};
++};
++
++&i2c6 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	mxt: atmel_mxt_ts@4a {
++		compatible = "atmel,maxtouch";
++		reg = <0x4a>;
++		interrupt-parent = <&pioC>;
++		interrupts = <15 0x8>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_mxt_irq>;
++		vdda-supply = <&mic23150_reg>;
++		vdd-supply = <&mic23150_reg>;
++	};
++};
++
++&pinctrl {
++
++	backlight {
++                pinctrl_pwm_bl: pwm-bl {
++                        atmel,pins = <AT91_PIOC 19 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++                };
++        };
++
++	mxt {
++		pinctrl_mxt_irq: mxt-irq {
++			atmel,pins =
++				<AT91_PIOC 15 AT91_PERIPH_GPIO AT91_PINCTRL_PULL_UP_DEGLITCH>;
++		};
++	};
++};
++
++&pwm0 {
++	status = "okay";
++};
+diff --git a/sam9x75_master/sam9x75_master_pwm.dtso b/sam9x75_master/sam9x75_master_pwm.dtso
+new file mode 100644
+index 0000000..8c18c2a
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_pwm.dtso
+@@ -0,0 +1,33 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75 Curiosity board overlay blob for PWM signals.
++ *
++ * Copyright (C) 2024 Microchip Technology, Inc.
++ * Author: Dharma Balasubiramani <dharma.b@microchip.com>
++ *
++ * In the schematic, only PWM0 channel 3 (PC21) is physically connected, while
++ * PWM0 channel 2 (PC20) lacks a mounted resistor. Therefore, it suffices to
++ * enable only the PWM associated with PC21.
++ */
++
++/dts-v1/;
++/plugin/;
++#include "dt-bindings/pinctrl/at91.h"
++
++&led_green {
++	status = "disabled"; /* Conflict between Mikrobus PWM and Green LED */
++};
++
++&pwm0 {
++        pinctrl-names = "default";
++        pinctrl-0 = <&pinctrl_pwm0_3>;
++        status = "okay";
++};
++
++&pinctrl {
++	pwm0 {
++		pinctrl_pwm0_3: pwm0-3 {
++			atmel,pins = <AT91_PIOC 21 AT91_PERIPH_C AT91_PINCTRL_NONE>;
++		};
++	};
++};
+diff --git a/sam9x75_master/sam9x75_master_wilcs02.dtso b/sam9x75_master/sam9x75_master_wilcs02.dtso
+new file mode 100644
+index 0000000..8672d9e
+--- /dev/null
++++ b/sam9x75_master/sam9x75_master_wilcs02.dtso
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Device Tree file for SAM9X75-CURIOSITY board
++ * overlay blob for WILCS02 Wireless Module over M.2 connector
++ *
++ * Copyright (C) 2024 Microchip Technology, Inc. and its subsidiaries
++ * Author: Ben Poon <ben.poon@microchip.com>
++ * Author: Durai Manickam KR <durai.manickamkr@microchip.com>
++ *
++ */
++/dts-v1/;
++/plugin/;
++
++#include "dt-bindings/pinctrl/at91.h"
++#include <dt-bindings/gpio/gpio.h>
++
++&sdmmc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	wifi@0 {
++		compatible = "microchip,wilc1000", "microchip,wilc3000";
++		reg = <0>;
++		bus-width = <4>;
++		interrupt-parent = <&pioC>;
++		interrupts = <17 0>;
++		reset-gpios = <&pioB 16 GPIO_ACTIVE_HIGH>;
++		chip_en-gpios = <&pioA 22 GPIO_ACTIVE_HIGH>;
++	};
++};
