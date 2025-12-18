@@ -1,0 +1,148 @@
+diff --git a/Kconfig b/Kconfig
+index afdd09dd..a8bb2720 100644
+--- a/Kconfig
++++ b/Kconfig
+@@ -458,6 +458,9 @@ config BOARD_QUIRK_SAM9X75_EB
+ 
+ config BOARD_QUIRK_SAM9X75_CURIOSITY
+         bool "Quirks for SAM9X75_CURIOSITY board"
++        
++config BOARD_QUIRK_SAM9X75_MASTER
++        bool "Quirks for SAM9X75_MASTER board"       
+ 
+ endchoice
+ 
+diff --git a/configs/sam9x75_master_bkptnone_defconfig b/configs/sam9x75_master_bkptnone_defconfig
+new file mode 100644
+index 00000000..c6c66e0b
+--- /dev/null
++++ b/configs/sam9x75_master_bkptnone_defconfig
+@@ -0,0 +1,17 @@
++# Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++#
++# SPDX-License-Identifier: MIT
++
++CONFIG_INIT_AND_STOP=y
++CONFIG_SAM9X7=y
++CONFIG_DEBUG=y
++CONFIG_DDR_SET_BY_DEVICE=y
++CONFIG_DDR_W632GU6NB12I=y
++CONFIG_BOARD_QUIRK_SAM9X75_MASTER=y
++CONFIG_LED_ON_BOARD=y
++CONFIG_LED_R_ON_PIOC=y
++CONFIG_LED_R_PIN=19
++CONFIG_LED_G_ON_PIOC=y
++CONFIG_LED_G_PIN=21
++CONFIG_LED_B_ON_PIOC=y
++CONFIG_LED_B_PIN=20
+diff --git a/configs/sam9x75_masterdf_qspi_uboot_defconfig b/configs/sam9x75_masterdf_qspi_uboot_defconfig
+new file mode 100644
+index 00000000..563d8eff
+--- /dev/null
++++ b/configs/sam9x75_masterdf_qspi_uboot_defconfig
+@@ -0,0 +1,21 @@
++# Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++#
++# SPDX-License-Identifier: MIT
++
++CONFIG_SAM9X7=y
++CONFIG_DEBUG=y
++CONFIG_DDR_SET_BY_DEVICE=y
++CONFIG_DDR_W632GU6NB12I=y
++CONFIG_SPI_CLK=100000000
++CONFIG_AT91_QSPI_OCTAL=y
++CONFIG_QSPI_DMA_SUPPORT=y
++CONFIG_IMG_ADDRESS="0x00040000"
++CONFIG_IMG_SIZE="0x00100000"
++CONFIG_BOARD_QUIRK_SAM9X75_MASTER=y
++CONFIG_LED_ON_BOARD=y
++CONFIG_LED_R_ON_PIOC=y
++CONFIG_LED_R_PIN=19
++CONFIG_LED_G_ON_PIOC=y
++CONFIG_LED_G_PIN=21
++CONFIG_LED_B_ON_PIOC=y
++CONFIG_LED_B_PIN=20
+diff --git a/configs/sam9x75_masternf_uboot_defconfig b/configs/sam9x75_masternf_uboot_defconfig
+new file mode 100644
+index 00000000..a84c7bc9
+--- /dev/null
++++ b/configs/sam9x75_masternf_uboot_defconfig
+@@ -0,0 +1,20 @@
++# Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++#
++# SPDX-License-Identifier: MIT
++
++CONFIG_SAM9X7=y
++CONFIG_DEBUG=y
++CONFIG_DDR_SET_BY_DEVICE=y
++CONFIG_DDR_W632GU6NB12I=y
++CONFIG_NANDFLASH=y
++CONFIG_NAND_TIMING_MODE=y
++CONFIG_NAND_DMA_SUPPORT=y
++CONFIG_IMG_SIZE="0x00100000"
++CONFIG_BOARD_QUIRK_SAM9X75_MASTER=y
++CONFIG_LED_ON_BOARD=y
++CONFIG_LED_R_ON_PIOC=y
++CONFIG_LED_R_PIN=19
++CONFIG_LED_G_ON_PIOC=y
++CONFIG_LED_G_PIN=21
++CONFIG_LED_B_ON_PIOC=y
++CONFIG_LED_B_PIN=20
+diff --git a/configs/sam9x75_mastersd_uboot_defconfig b/configs/sam9x75_mastersd_uboot_defconfig
+new file mode 100644
+index 00000000..228cbab3
+--- /dev/null
++++ b/configs/sam9x75_mastersd_uboot_defconfig
+@@ -0,0 +1,17 @@
++# Copyright (C) 2023 Microchip Technology Inc. and its subsidiaries
++#
++# SPDX-License-Identifier: MIT
++
++CONFIG_SAM9X7=y
++CONFIG_DEBUG=y
++CONFIG_DDR_SET_BY_DEVICE=y
++CONFIG_DDR_W632GU6NB12I=y
++CONFIG_SDCARD=y
++CONFIG_BOARD_QUIRK_SAM9X75_MASTER=y
++CONFIG_LED_ON_BOARD=y
++CONFIG_LED_R_ON_PIOC=y
++CONFIG_LED_R_PIN=19
++CONFIG_LED_G_ON_PIOC=y
++CONFIG_LED_G_PIN=21
++CONFIG_LED_B_ON_PIOC=y
++CONFIG_LED_B_PIN=20
+diff --git a/device/sam9x7/sam9x7.c b/device/sam9x7/sam9x7.c
+index 55668855..adc23c26 100644
+--- a/device/sam9x7/sam9x7.c
++++ b/device/sam9x7/sam9x7.c
+@@ -338,7 +338,7 @@ void hw_init(void)
+ 	ddram_init();
+ #endif
+ 
+-#ifdef CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY
++#if (defined(CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY) || defined(CONFIG_BOARD_QUIRK_SAM9X75_MASTER))
+ 	at91_rio0_select();
+ #endif
+ 
+@@ -388,7 +388,7 @@ void at91_sdhc_hw_init(void)
+ {
+ #ifdef CONFIG_SDHC0
+ 	const struct pio_desc sdmmc_pins[] = {
+-#if defined(CONFIG_BOARD_QUIRK_SAM9X75_EB) || defined(CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY)
++#if (defined(CONFIG_BOARD_QUIRK_SAM9X75_EB) || defined(CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY) || defined(CONFIG_BOARD_QUIRK_SAM9X75_MASTER))
+ 		{"SDMMC0_CMD",	AT91C_PIN_PA(1), 0, PIO_DRVSTR_HI | PIO_SLEWR_CTRL, PIO_PERIPH_A},
+ 		{"SDMMC0_CK",	AT91C_PIN_PA(2), 0, PIO_DRVSTR_HI | PIO_SLEWR_CTRL, PIO_PERIPH_A},
+ 		{"SDMMC0_DAT0",	AT91C_PIN_PA(0), 0, PIO_DRVSTR_HI | PIO_SLEWR_CTRL, PIO_PERIPH_A},
+diff --git a/driver/board_hw_init.c b/driver/board_hw_init.c
+index b634a11d..850d9232 100644
+--- a/driver/board_hw_init.c
++++ b/driver/board_hw_init.c
+@@ -177,7 +177,7 @@ void at91_can_stdby_dis(void)
+ }
+ #endif
+ 
+-#ifdef CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY
++#if (defined(CONFIG_BOARD_QUIRK_SAM9X75_CURIOSITY) || defined(CONFIG_BOARD_QUIRK_SAM9X75_MASTER))
+ /*
+  * Must set PA15 to HIGH and PA16 to LOW for enabling the RIO-0 module with SDIO
+  * over M.2 connector. Reset the RIO-0 module with PA21 after configuring the
